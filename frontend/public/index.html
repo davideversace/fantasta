@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fantacalcio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login-container">
+    <h2>Inserisci il nome della tua squadra</h2>
+    <input type="text" id="team-name" placeholder="Es. FC d" />
+    <button onclick="saveTeamName()">Entra</button>
+  </div>
+
+  <div id="app-container" style="display: none;">
+    <h1>Benvenuto, <span id="team-display"></span>!</h1>
+
+    <div id="main-layout" style="display: flex;">
+      <div id="auction-area" style="flex: 3; padding: 1rem;">
+        <h2>Benvenuto nella sala d'asta!</h2>
+      </div>
+      <div id="teams-sidebar" style="flex: 1; padding: 1rem; border-left: 2px solid #ccc;">
+        <h3>Squadre</h3>
+        <ul id="teams-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
