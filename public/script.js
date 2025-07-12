@@ -5,6 +5,7 @@ let bestBidder = "Team 5";
 let timer = 10;
 let timerInterval = null;
 let timerRunning = true;
+let bidHistory = []; 
 
 const socket = io();
 
@@ -107,6 +108,9 @@ function submitTeamName() {
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
+  if (myTeamName === "U.S. Bi") {
+    document.getElementById("admin-buttons").style.display = "block";
+  }
   renderTeams();
   renderMyPlayers();
 }
@@ -120,6 +124,7 @@ function increaseBid(amount) {
         alert("Non hai abbastanza crediti per offrire");
         return;
       }
+      bidHistory.push({ team: bestBidder, amount: bestBid });
       bestBid += amount;
       bestBidder = myTeamName;
       updateBidUI();
@@ -139,6 +144,7 @@ function submitBid() {
         alert("Non hai abbastanza crediti");
         return;
       }
+      bidHistory.push({ team: bestBidder, amount: bestBid });
       bestBid = val;
       bestBidder = myTeamName;
       updateBidUI();
@@ -146,6 +152,17 @@ function submitBid() {
     });
 }
 
+function undoLastBid() {
+  fetch('/undo-bid', { method: 'POST' })
+    .then(res => {
+      if (!res.ok) throw new Error("Errore");
+      return res.json();
+    })
+    .catch(err => {
+      console.error("Errore nell'annullare l'offerta:", err);
+      alert("Non è stato possibile annullare l'offerta.");
+    });
+}
 function cancelAuction() {
   fetch('/cancel-auction', { method: 'POST' })
     .then(res => res.json())
@@ -244,6 +261,7 @@ function endAuction() {
       renderMyPlayers();
       renderHistory();
 
+      bidHistory = [];
       document.getElementById('current-player').textContent = "—";
       bestBid = 1;
       bestBidder = "Nessuno";
@@ -286,6 +304,27 @@ function toggleTimer() {
   timerRunning = !timerRunning;
 }
 
+function deleteTeam(teamName) {
+  if (!confirm(`Sei sicuro di voler eliminare la squadra "${teamName}"?`)) return;
+
+  fetch('/delete-team', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ teamName })
+  })
+    .then(res => res.json())
+    .then(result => {
+      if (result.ok) {
+        alert(`Squadra "${teamName}" eliminata.`);
+        renderTeams();
+        renderMyPlayers();
+      } else {
+        alert("Errore: " + result.error);
+      }
+    })
+    .catch(err => console.error("Errore durante l'eliminazione squadra:", err));
+}
+
 function renderTeams() {
   fetch('/get-teams')
     .then(res => res.json())
@@ -295,7 +334,10 @@ function renderTeams() {
       for (const team in data) {
         const { credits, players } = data[team];
         const li = document.createElement('li');
-        li.textContent = `${team} - ${credits} cr - ${players.length} giocatori`;
+        li.innerHTML = `
+          ${team} - ${credits} cr - ${players.length} giocatori
+          <button class="delete-btn" onclick="deleteTeam('${team}')">🗑</button>
+        `;
         ul.appendChild(li);
       }
     });
@@ -312,7 +354,8 @@ function renderMyPlayers() {
     if (typeof player === 'string') {
       li.textContent = player;
     } else {
-      li.textContent = `${player.name} (${player.role})`;
+      const priceText = player.price ? ` - ${player.price} cr` : '';
+      li.textContent = `${player.name} (${player.role})${priceText}`;
     }
     ul.appendChild(li);
   });

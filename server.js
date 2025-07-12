@@ -21,6 +21,7 @@ let currentAuction = {
   bestBid: 1,
   bestBidder: "Nessuno"
 };
+let bidHistory = [];
 
 // -- SOCKET.IO SETUP --
 const httpServer = http.createServer(app);
@@ -46,6 +47,7 @@ app.get('/search-player', (req, res) => {
 app.post('/update-auction', (req, res) => {
   const { bestBid, bestBidder, player } = req.body;
   const found = playersList.find(x => x.name === player);
+  bidHistory.push({ bestBid: currentAuction.bestBid, bestBidder: currentAuction.bestBidder });
   currentAuction = {
     player,
     playerRole: found ? found.role : "",
@@ -67,8 +69,7 @@ app.post('/finalize', (req, res) => {
   if (teams[bestBidder].credits < bestBid) return res.status(400).json({ error: "Crediti insufficienti" });
 
   teams[bestBidder].credits -= bestBid;
-  teams[bestBidder].players.push({ name: player, role: playerRole });
-
+  teams[bestBidder].players.push({ name: player, role: playerRole, price: bestBid });
   history.unshift({ player, role: playerRole, team: bestBidder, price: bestBid });
   if (history.length > 10) history.pop();
 
@@ -107,9 +108,24 @@ app.post('/cancel-auction', (req, res) => {
 });
 
 app.post('/set-teams', (req, res) => {
-  teams = req.body;
-  res.json({ ok: true });
-});
+    teams = req.body;
+    console.log("Teams aggiornati:", teams);
+    io.emit('teams-update', teams); // 🔥 aggiornamento live a tutti i client
+    res.json({ ok: true });
+  });
+
+app.post('/delete-team', (req, res) => {
+    const { teamName } = req.body;
+    if (!teams[teamName]) {
+      return res.status(400).json({ error: "Squadra non trovata" });
+    }
+  
+    delete teams[teamName];
+    console.log(`🗑 Squadra eliminata: ${teamName}`);
+  
+    io.emit('teams-update', teams);
+    res.json({ ok: true });
+  });
 
 app.get('/get-teams', (req, res) => {
   res.json(teams);
@@ -128,11 +144,28 @@ app.post('/new-player', (req, res) => {
   res.json({ ok: true });
 });
 
+app.post('/undo-bid', (req, res) => {
+    if (bidHistory.length === 0) {
+      return res.status(400).json({ error: "Nessuna offerta da annullare" });
+    }
+  
+    const last = bidHistory.pop();
+    currentAuction.bestBid = last.bestBid;
+    currentAuction.bestBidder = last.bestBidder;
+  
+    io.emit('auction-update', currentAuction);
+    res.json({ ok: true });
+  });
+
+
+
 app.post('/bid', (req, res) => {
   const { team, amount } = req.body;
 
   if (!teams[team]) return res.status(400).json({ error: "Squadra non trovata" });
   if (teams[team].credits < amount) return res.status(400).json({ error: "Crediti insufficienti" });
+
+  bidHistory.push({ bestBid: currentAuction.bestBid, bestBidder: currentAuction.bestBidder });
 
   currentAuction.bestBid = amount;
   currentAuction.bestBidder = team;

@@ -44,9 +44,13 @@
           <ul id="suggestions" style="background:#222;color:#fff;position:absolute;list-style:none;padding:5px;border-radius:5px;max-height:150px;overflow-y:auto;width:200px;display:none;"></ul>
           <button onclick="callPlayer()">Chiama</button>
         </div>
-        <div class="actions">
-          <button onclick="endAuction()">Termina asta</button>
-          <button onclick="cancelAuction()">Ritira giocatore</button>
+        <div id="admin-buttons" style="display: none;">
+          <div class="actions">
+            <button onclick="endAuction()">Termina asta</button>
+            <button onclick="cancelAuction()">Ritira giocatore</button>
+            <button onclick="undoLastBid()">Annulla Ultima Offerta</button>
+            <button onclick="undoLastAssignment()">Annulla ultima assegnazione</button>
+          </div>
         </div>
       </div>
 
@@ -56,7 +60,6 @@
         <ul class="teams"></ul>
         <h2>Ultimi acquisti</h2>
         <ul id="history"></ul>
-        <button onclick="undoLastAssignment()">Annulla ultima assegnazione</button>
       </div>
     </div>
 
