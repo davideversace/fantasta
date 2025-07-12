@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asta Fantacalcio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Login -->
+  <div id="login-screen" class="center-section" style="height: 100vh; justify-content: center;">
+    <h2>Inserisci il nome della tua squadra</h2>
+    <div class="input-group">
+      <input type="text" id="team-name-input" placeholder="Nome squadra" />
+      <button onclick="submitTeamName()">Entra</button>
+    </div>
+  </div>
+
+  <!-- App principale -->
+  <div id="main-app" style="display: none;">
+    <div class="container">
+      <!-- Colonna sinistra -->
+      <div class="column">
+        <h2>La tua squadra</h2>
+        <ul class="players"></ul>
+      </div>
+
+      <!-- Colonna centrale -->
+      <div class="column center-section">
+        <h2>Giocatore attuale: <span id="current-player">Zirkzee</span></h2>
+        <div id="best-offer-row">
+          Miglior offerente: <strong id="best-bidder">Team 5</strong> - <span id="best-bid">22</span> crediti
+        </div>        <div class="bid-buttons">
+          <button onclick="increaseBid(1)">+1</button>
+          <button onclick="increaseBid(5)">+5</button>
+          <button onclick="increaseBid(10)">+10</button>
+        </div>
+        <div class="input-group">
+          <input type="number" id="custom-bid" placeholder="Offerta libera">
+          <button onclick="submitBid()">Offri</button>
+        </div>
+        <div class="input-group">
+          <input type="text" id="new-player" placeholder="Chiama nuovo giocatore" autocomplete="off">
+          <ul id="suggestions" style="background:#222;color:#fff;position:absolute;list-style:none;padding:5px;border-radius:5px;max-height:150px;overflow-y:auto;width:200px;display:none;"></ul>
+          <button onclick="callPlayer()">Chiama</button>
+        </div>
+        <div class="actions">
+          <button onclick="endAuction()">Termina asta</button>
+          <button onclick="cancelAuction()">Ritira giocatore</button>
+        </div>
+      </div>
+
+      <!-- Colonna destra -->
+      <div class="column">
+        <h2>Squadre</h2>
+        <ul class="teams"></ul>
+        <h2>Ultimi acquisti</h2>
+        <ul id="history"></ul>
+        <button onclick="undoLastAssignment()">Annulla ultima assegnazione</button>
+      </div>
+    </div>
+
+    <div class="timer-overlay" id="timer-display"></div>
+    <div class="bottom-right">
+      <button onclick="toggleTimer()">Blocca Timer</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

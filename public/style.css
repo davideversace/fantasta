@@ -1,0 +1,129 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('sfondo.png') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.history {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  color: #ccc;
+}
+.history li {
+  padding: 4px 0;
+  border-bottom: 1px solid #ffffff22;
+}
+
+.column {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  margin: 10px;
+}
+
+.column h2 {
+  margin-top: 0;
+  border-bottom: 1px solid #fff3;
+  padding-bottom: 10px;
+}
+
+.players, .teams {
+  list-style: none;
+  padding: 0;
+}
+
+.players li, .teams li {
+  padding: 6px 0;
+  border-bottom: 1px solid #fff2;
+}
+
+.center-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.bid-buttons button,
+.actions button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px;
+  background-color: #27ae60;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.bid-buttons button:hover,
+.actions button:hover {
+  background-color: #2ecc71;
+  transform: scale(1.1);
+}
+
+.input-group {
+  margin: 10px 0;
+}
+
+.input-group input {
+  padding: 10px;
+  width: 200px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+}
+
+.timer-overlay {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  font-weight: bold;
+  color: #ffde59;
+  animation: zoomOut 1s ease forwards;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes zoomOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.8);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.bottom-right {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}
