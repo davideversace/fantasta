@@ -108,11 +108,19 @@ function submitTeamName() {
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
+
+  // imposta titolo con il nome della squadra
+  const titleEl = document.getElementById('my-team-title');
+  if (titleEl && myTeamName) {
+    titleEl.textContent = "La tua squadra - " + myTeamName;
+  }
+
+  renderTeams();
+  renderMyPlayers();
+
   if (myTeamName === "U.S. Bi") {
     document.getElementById("admin-buttons").style.display = "block";
   }
-  renderTeams();
-  renderMyPlayers();
 }
 
 function increaseBid(amount) {
@@ -150,6 +158,7 @@ function submitBid() {
       updateBidUI();
       syncAuction();
     });
+    document.getElementById('custom-bid').value = ""; 
 }
 
 function undoLastBid() {
@@ -221,6 +230,7 @@ function callPlayer() {
     updateBidUI();
     syncAuction();
   }
+  document.getElementById('new-player').value = ""; 
 }
 
 function fetchCurrentAuction() {
@@ -281,8 +291,9 @@ function showTimerEffect(value) {
 }
 
 function startTimer() {
-  stopTimer();
+  stopTimer(); // evita timer multipli
   timerRunning = true;
+  timer = 10; // o il valore che vuoi resettare ogni volta
   timerInterval = setInterval(() => {
     if (!timerRunning) return;
     if (timer <= 0) {
@@ -297,6 +308,7 @@ function startTimer() {
 
 function stopTimer() {
   clearInterval(timerInterval);
+  timerRunning = false;
 }
 
 function toggleTimer() {
@@ -336,7 +348,7 @@ function renderTeams() {
         const li = document.createElement('li');
         li.innerHTML = `
           ${team} - ${credits} cr - ${players.length} giocatori
-          <button class="delete-btn" onclick="deleteTeam('${team}')">🗑</button>
+          <button class="delete-btn" onclick="deleteTeam('${team}')">❌</button>
         `;
         ul.appendChild(li);
       }

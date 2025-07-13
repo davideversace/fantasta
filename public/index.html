@@ -9,7 +9,7 @@
 <body>
   <!-- Login -->
   <div id="login-screen" class="center-section" style="height: 100vh; justify-content: center;">
-    <h2>Inserisci il nome della tua squadra</h2>
+    <h2>La tua squadra</h2>
     <div class="input-group">
       <input type="text" id="team-name-input" placeholder="Nome squadra" />
       <button onclick="submitTeamName()">Entra</button>
@@ -21,7 +21,7 @@
     <div class="container">
       <!-- Colonna sinistra -->
       <div class="column">
-        <h2>La tua squadra</h2>
+        <h2 id="my-team-title">La tua squadra</h2>
         <ul class="players"></ul>
       </div>
 
@@ -37,19 +37,21 @@
         </div>
         <div class="input-group">
           <input type="number" id="custom-bid" placeholder="Offerta libera">
-          <button onclick="submitBid()">Offri</button>
+          <button onclick="submitBid()">💰</button>
         </div>
         <div class="input-group">
           <input type="text" id="new-player" placeholder="Chiama nuovo giocatore" autocomplete="off">
           <ul id="suggestions" style="background:#222;color:#fff;position:absolute;list-style:none;padding:5px;border-radius:5px;max-height:150px;overflow-y:auto;width:200px;display:none;"></ul>
-          <button onclick="callPlayer()">Chiama</button>
+          <button onclick="callPlayer()">📣</button>
         </div>
         <div id="admin-buttons" style="display: none;">
-          <div class="actions">
+          <div class="actions" style = "display: flex; flex-direction: column;">
             <button onclick="endAuction()">Termina asta</button>
             <button onclick="cancelAuction()">Ritira giocatore</button>
             <button onclick="undoLastBid()">Annulla Ultima Offerta</button>
             <button onclick="undoLastAssignment()">Annulla ultima assegnazione</button>
+            <button onclick="startTimer()">Avvia Timer</button>
+            <button onclick="stopTimer()">Ferma Timer</button>
           </div>
         </div>
       </div>
@@ -64,9 +66,7 @@
     </div>
 
     <div class="timer-overlay" id="timer-display"></div>
-    <div class="bottom-right">
-      <button onclick="toggleTimer()">Blocca Timer</button>
-    </div>
+   
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
